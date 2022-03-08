@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+set -eu 
+
+source "$SNAP/actions/common/utils.sh"
+
+KUBECTL="$SNAP/kubectl --kubeconfig=${SNAP_DATA}/credentials/client.config"
+
+LOKI_NS="monitoring"
+
+"$SNAP/microk8s-enable.wrapper" dns
+"$SNAP/microk8s-enable.wrapper" helm3
+
+# make sure the "monitoring" namespace exists
+$KUBECTL create namespace "$LOKI_NS" > /dev/null 2>&1 || true
+
+HELM="$SNAP_DATA/bin/helm3 --kubeconfig=$SNAP_DATA/credentials/client.config"
+
+$HELM repo add grafana https://grafana.github.io/helm-charts
+$HELM repo update
+$HELM upgrade --install loki --namespace $LOKI_NS grafana/loki-stack
+
+echo "Loki is installed. Please wait until loki and loki-promtail pods are up and running."
