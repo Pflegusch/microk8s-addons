@@ -124,3 +124,10 @@ microk8s-addons:
       check_status: "deployment.apps/argo-cd-argocd-server"
       supported_architectures:
         - amd64
+
+    - name: "loki"
+      description: "Cost effective and easy to operate logging for Kubernetes pods"
+      version: "2.4.2"
+      check_status: "statefulset.apps/loki"
+      supported_architectures:
+        - amd64
